@@ -1,6 +1,6 @@
 {
-	"name": "instagram-scraper",
-	"version": "0.0",
+	"name": "my-instagram-scraper",
+	"version": "0.1",
 	"buildTag": "latest",
 	"env": { "npm_config_loglevel": "silent", "APIFY_LOG_LEVEL": "DEBUG" },
 	"template": "puppeteer_crawler"

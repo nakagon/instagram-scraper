@@ -13,6 +13,7 @@ module.exports = {
         PROFILE: 'user',
         HASHTAG: 'hashtag',
         POST: 'post',
+        HASHTAG_DETAIL: 'hashtag_detail'
     },
     // Types of scrapes this actor can do
     SCRAPE_TYPES: {
@@ -25,12 +26,14 @@ module.exports = {
         PLACE: 'place',
         USER: 'user',
         HASHTAG: 'hashtag',
+        HASHTAG_DETAIL: 'hashtag_detail'
     },
     PAGE_TYPE_URL_REGEXES: {
         PLACE: /https:\/\/www\.instagram\.com\/explore\/locations\/.+/,
         PROFILE: /https:\/\/www\.instagram\.com\/[^/]{2,}\/?$/,
         HASHTAG: /https:\/\/www\.instagram\.com\/explore\/tags\/.+/,
         POST: /https:\/\/www\.instagram.com\/p\/.+/,
+        HASHTAG_DETAIL: /https:\/\/www\.instagram\.com\/explore\/tags\/.+/,
     },
     // Instagrams GraphQL Endpoint URL
     GRAPHQL_ENDPOINT: 'https://www.instagram.com/graphql/query/?query_hash=',

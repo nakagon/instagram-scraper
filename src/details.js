@@ -159,6 +159,17 @@ const formatHashtagOutput = (request, data) => ({
     latestPosts: data.edge_hashtag_to_media ? data.edge_hashtag_to_media.edges.map(edge => edge.node).map(formatSinglePost) : [],
 });
 
+const formatHashtagDetailOutput = (request, data) => ({
+    '#debug': Apify.utils.createRequestDebugInfo(request),
+    id: data.id,
+    name: data.name,
+    public: data.has_public_page,
+    topPostsOnly: data.is_top_media_only,
+    profilePicUrl: data.profile_pic_url,
+    postsCount: data.edge_hashtag_to_media.count,
+});
+
+
 // Formats data from window._shared_data.entry_data.PostPage[0].graphql.shortcode_media to nicer output
 const formatPostOutput = async (input, request, data, page, itemSpec) => {
     const likedBy = await getPostLikes(page, itemSpec, input);
@@ -180,12 +191,19 @@ const formatPostOutput = async (input, request, data, page, itemSpec) => {
 // Finds correct variable in window._shared_data.entry_data based on pageType
 // Finds correct variable in window._shared_data.entry_data based on pageType
 const getOutputFromEntryData = async ({ input, itemSpec, request, entryData, page, proxy, userResult }) => {
-    switch (itemSpec.pageType) {
-        case PAGE_TYPES.PLACE: return formatPlaceOutput(request, entryData.LocationsPage[0].graphql.location, page, itemSpec, userResult);
-        case PAGE_TYPES.PROFILE: return formatProfileOutput(input, request, entryData.ProfilePage[0].graphql.user, page, itemSpec, userResult);
-        case PAGE_TYPES.HASHTAG: return formatHashtagOutput(request, entryData.TagPage[0].graphql.hashtag, page, itemSpec, userResult);
-        case PAGE_TYPES.POST: return await formatPostOutput(input, request, entryData.PostPage[0].graphql.shortcode_media, page, itemSpec, userResult);
-        default: throw new Error('Not supported');
+    Apify.utils.log.debug('Response', itemSpec.pageType );
+    Apify.utils.log.debug('Response', {input} );
+
+    if (input.searchType == 'hashtag_detail') {
+        return formatHashtagDetailOutput(request, entryData.TagPage[0].graphql.hashtag, page, itemSpec, userResult);
+    } else {
+        switch (itemSpec.pageType) {
+            case PAGE_TYPES.PLACE: return formatPlaceOutput(request, entryData.LocationsPage[0].graphql.location, page, itemSpec, userResult);
+            case PAGE_TYPES.PROFILE: return formatProfileOutput(input, request, entryData.ProfilePage[0].graphql.user, page, itemSpec, userResult);
+            case PAGE_TYPES.HASHTAG: return formatHashtagOutput(request, entryData.TagPage[0].graphql.hashtag, page, itemSpec, userResult);
+            case PAGE_TYPES.POST: return await formatPostOutput(input, request, entryData.PostPage[0].graphql.shortcode_media, page, itemSpec, userResult);
+            default: throw new Error('Not supported');
+        }
     }
 };
 

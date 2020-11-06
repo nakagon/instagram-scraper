@@ -30,8 +30,13 @@ const searchUrls = async (input, proxy, isRetry = false) => {
     }
 
     Apify.utils.log.info(`Searching for "${search}"`);
+    let searchUrl = '';
+    if (searchType == 'hashtag_detail') {
+        searchUrl = `https://www.instagram.com/web/search/topsearch/?context=hashtag&query=${encodeURIComponent(search)}`;
+    } else {
+        searchUrl = `https://www.instagram.com/web/search/topsearch/?context=${searchType}&query=${encodeURIComponent(search)}`;
+    }
 
-    const searchUrl = `https://www.instagram.com/web/search/topsearch/?context=${searchType}&query=${encodeURIComponent(search)}`;
     const response = await request({
         url: searchUrl,
         json: true,
@@ -57,6 +62,7 @@ const searchUrls = async (input, proxy, isRetry = false) => {
     if (searchType === SEARCH_TYPES.USER) urls = response.users.map(formatUserResult);
     else if (searchType === SEARCH_TYPES.PLACE) urls = response.places.map(formatPlaceResult);
     else if (searchType === SEARCH_TYPES.HASHTAG) urls = response.hashtags.map(formatHashtagResult);
+    else if (searchType === SEARCH_TYPES.HASHTAG_DETAIL) urls = response.hashtags.map(formatHashtagResult);
 
     Apify.utils.log.info(`Found ${urls.length} search results. Limiting to ${searchLimit}.`);
     urls = urls.slice(0, searchLimit);
